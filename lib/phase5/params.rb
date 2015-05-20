@@ -4,14 +4,11 @@ require 'byebug'
 module Phase5
   class Params
     def initialize(req, route_params = {})
-      byebug
       query_string = req.query_string
       body = req.body
-      byebug
 
       query_string_hash = parse_www_encoded_form(query_string) unless query_string.nil?
       body_hash = parse_www_encoded_form(body) unless body.nil?
-
 
       if query_string.nil? and body.nil?
         @params = {}
@@ -28,21 +25,9 @@ module Phase5
           end
         end
       end
-      byebug
+
       @params.merge!(route_params)
     end
-=begin
-  h11.merge(h22) do |key, oldval, newval|
-   if !newval.nil?
-     {oldval.keys.first => oldval.values.first, newval.keys.first => newval.values.first}
-   else
-     oldval
-   end
-  end
-
-  {:user=>{:name=>"hank", :height=>12}}
-
-=end
 
     def [](key)
       key = key.to_s
@@ -55,8 +40,9 @@ module Phase5
 
     class AttributeNotFoundError < ArgumentError; end;
 
-    # private
+    private
 
+    # Takes a url string and returns the key-value pairs, in an array of key-value pairs. [ [ ], [ ], .....]
     def parse_www_encoded_form(www_encoded_form) # parameter is a url address
       params = {}
       after_question_mark = www_encoded_form.split('?').last
@@ -73,17 +59,12 @@ module Phase5
       # [["user[boss][name]", "mike"], ["user[boss][height]", "11"]]
 
       build_params(key_value_pairs)
-
-
-
     end
 
+
+    # Takes all key-value pairs (each an array) and generates a hash.
+    # Takes in [['user[boss][name]', 'brad'], ['user[boss][height]', 12]]
     def build_params(data)
-      # unless data.include?('[')
-      #   key = data.split('=').first
-      #   val = data.split('=').last
-      #   return
-      # end
       params = {}
       data.each do |pair|
         keys = parse_key(pair.first) # array
@@ -99,21 +80,20 @@ module Phase5
         end
       end
       params
+      # RESULT
+      # {'user' => {'boss' => {'name' => 'brad', 'height' => 12}}}
     end
 
-    def self.nest(keys, val)
-      if keys.length == 1
-        return {keys.first => val}
-      end
-      {keys.first => nest(keys.drop(1), val)}
-    end
-
-    def parse_key(keys)
-      if keys.include?('[') or keys.include?(']')
-        keys = keys.split(/\]\[|\[|\]/)
+    # Takes in array of nested keys, ['user[boss][name]'], and pulls out all
+    # the keys and puts them into a single array.
+    def parse_key(key)
+      if key.include?('[') or key.include?(']')
+        key = key.split(/\]\[|\[|\]/)
       else
-        [keys]
+        [key]
       end
+      # RESULT
+      # ['user[boss][name]'] => ['user', 'boss', 'name']
     end
   end
 end
