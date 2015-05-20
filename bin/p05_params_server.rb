@@ -55,7 +55,7 @@ end
 
 server = WEBrick::HTTPServer.new(Port: 3000)
 server.mount_proc('/') do |req, res|
-
+  byebug
   case [req.request_method, req.path]
   when ['GET', '/cats']
 
