@@ -20,6 +20,7 @@ module Phase4
     #
 
     def session
+
       @session ||= Session.new(@req)
     end
   end

@@ -6,13 +6,15 @@ module Phase4
     # find the cookie for this app
     # deserialize the cookie into a hash
     def initialize(req)
-      req.cookies.each do |cookie|
-        if cookie.name == '_rails_lite_app'
-          @rails_lite_app_cookie = JSON.parse(cookie.value)
-          return
+
+      if req.cookies
+        req.cookies.each do |cookie|
+          if cookie.name == '_rails_lite_app'
+            @rails_lite_app_cookie = JSON.parse(cookie.value)
+            return
+          end
         end
       end
-      # XXX: Why is it necessary to have an ||?
       @rails_lite_app_cookie ||= {}
     end
 

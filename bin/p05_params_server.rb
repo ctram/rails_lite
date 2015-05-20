@@ -44,7 +44,7 @@ class CatsController < Phase5::ControllerBase
 
   def index
     @cats = Cat.all
-    render :index 
+    render :index
   end
 
   def new
@@ -55,8 +55,10 @@ end
 
 server = WEBrick::HTTPServer.new(Port: 3000)
 server.mount_proc('/') do |req, res|
+
   case [req.request_method, req.path]
   when ['GET', '/cats']
+
     CatsController.new(req, res, {}).index
   when ['POST', '/cats']
     CatsController.new(req, res, {}).create
