@@ -21,7 +21,6 @@ module Phase2
       @res.status = 302
       @already_built_response = true
     end
-
     # Populate the response with content.
     # Set the response's content type to the given type.
     # Raise an error if the developer tries to double render.

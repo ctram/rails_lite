@@ -9,10 +9,18 @@ module Phase5
     #
     # You haven't done routing yet; but assume route params will be
     # passed in as a hash to `Params.new` as below:
-    def initialize(req, route_params = {})
-    end
 
+    # INSTRUCTIONS
+
+    def initialize(req, route_params = {})
+      @params = {}
+    end
+    # NB: Your Params#[] getter method should respond indifferently to both symbol and string versions of its keys. In other words, params[:id] and params['id'] should both work.
+    #
+    # Instantiate a Params object in your controller, as an ivar. This will keep track of the params for the controller.
     def [](key)
+      key = key.to_s
+      @params[key]
     end
 
     def to_s
@@ -28,6 +36,10 @@ module Phase5
     # should return
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
+      params_from_url = URI::decode_www_form(www_encoded_form) # array of keys and values
+      params_from_url.each do |pair|
+        @params_from_url[pair.first] = pair.last
+      end
     end
 
     # this should return an array
