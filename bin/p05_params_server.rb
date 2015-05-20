@@ -44,7 +44,7 @@ class CatsController < Phase5::ControllerBase
 
   def index
     @cats = Cat.all
-    render :index
+    render :index 
   end
 
   def new
