@@ -69,6 +69,7 @@ describe Phase4::ControllerBase do
 
   describe "#session" do
     it "returns a session instance" do
+
       expect(cats_controller.session).to be_a(Phase4::Session)
     end
 
@@ -80,11 +81,17 @@ describe Phase4::ControllerBase do
 
   shared_examples_for "storing session data" do
     it "should store the session data" do
+
       cats_controller.session['test_key'] = 'test_value'
+
       cats_controller.send(method, *args)
+
       cookie = res.cookies.find { |c| c.name == '_rails_lite_app' }
+
       h = JSON.parse(cookie.value)
+
       expect(h['test_key']).to eq('test_value')
+
     end
   end
 

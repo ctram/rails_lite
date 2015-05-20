@@ -1,5 +1,6 @@
 require 'webrick'
 require_relative '../lib/phase4/controller_base'
+require 'byebug'
 
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick.html
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/HTTPRequest.html
@@ -11,6 +12,7 @@ class MyController < Phase4::ControllerBase
     session["count"] ||= 0
     session["count"] += 1
     render :counting_show
+
   end
 end
 
