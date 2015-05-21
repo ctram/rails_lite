@@ -1,3 +1,5 @@
+require 'byebug'
+
 module Phase6
   class Route
     attr_reader :pattern, :http_method, :controller_class, :action_name
@@ -11,12 +13,23 @@ module Phase6
 
     # checks if pattern matches path and method matches request method
     def matches?(req)
-      req.request_method.downcase.to_sym == @http_method
+      req.request_method.downcase.to_sym == @http_method and req.path == @pattern
     end
 
     # use pattern to pull out route params (save for later?)
     # instantiate controller and call controller action
     def run(req, res)
+      # TODO: add route_params variable which is a hash of the pararms in
+      # the url request.
+      # ex.
+      # route_params = '/cats/1/comments/3 '=> {cat_id: 1, comment_id: 3}
+      route_params = {}
+      data = @pattern.match(req.path)
+      data.names.each do |name|
+        route_params[name] = data[name]
+      end
+      byebug
+      @controller_class.new(req,res, route_params).invoke_action(@action_name)
     end
   end
 
@@ -34,8 +47,10 @@ module Phase6
     end
 
     # evaluate the proc in the context of the instance
-    # for syntactic sugar :)
+    # for syntactisc sugar :)
     def draw(&proc)
+      byebug
+      self.instance_eval(&proc)
     end
 
     # make each of these methods that
@@ -51,8 +66,7 @@ module Phase6
       path = req.path
       method = req.request_method
       @routes.each do |route|
-        if route.pattern == path
-          and route.method == method.downcase.to_sym
+        if route.pattern == path and route.method == method.downcase.to_sym
           return route
         end
       end
@@ -61,6 +75,12 @@ module Phase6
 
     # either throw 404 or call run on a matched route
     def run(req, res)
+      route = match(req)
+      if route
+        route.run
+      else
+        res.status = 404
+      end
     end
   end
 end

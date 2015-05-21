@@ -110,6 +110,7 @@ describe Phase6::Router do
     it "adds a route when an http method method is called" do
       router = Phase6::Router.new
       router.get Regexp.new("^/users$"), Phase6::ControllerBase, :index
+      get '/users/admins', to: 'users#show_admins'
       expect(router.routes.count).to eq(1)
     end
   end
